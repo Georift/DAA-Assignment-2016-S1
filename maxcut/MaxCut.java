@@ -13,8 +13,8 @@ public class MaxCut
         {'D', 'E', 'F'}
     };
 
-    public static char s1[] = {'A', 'B', 'C', 'E'};
-    public static char s2[] = {'D', 'F', 'G'};
+    public static char s1[] = {'A', 'B', 'C', 'E', '\u0000', '\u0000', '\u0000'};
+    public static char s2[] = {'D', 'F', 'G', '\u0000', '\u0000', '\u0000', '\u0000'};
 
     public static void main(String[] args)
     {
@@ -28,17 +28,87 @@ public class MaxCut
             innerDegree[ii] = innerDegree(vertex[ii]);
         }
 
+        int currentCut = calculateCut(edges);
         for(int jj = 0; jj < innerDegree.length; jj++)
         {
             char tmpVertex = extractMax(innerDegree);
-            int currentCut = 0;
             System.out.println("#" + jj + " select " + tmpVertex + " cur cut = " + calculateCut(edges));
 
+            char[] oldS1 = new char[7];
+            char[] oldS2 = new char[7];
 
-            System.out.println("\tmoving a into other set creates a cut of " + 
+            System.arraycopy(s1, 0, oldS1, 0, s1.length);
+            System.arraycopy(s2, 0, oldS2, 0, s2.length);
 
+            if (inSet(tmpVertex, s1))
+            {
+                s1 = removeVertex(tmpVertex, s1);
+                s2 = addVertex(tmpVertex, s2);
+            }
+            else
+            {
+                s1 = addVertex(tmpVertex, s1);
+                s2 = removeVertex(tmpVertex, s2);
+            }
+
+            outputSet(s1);
+            outputSet(s2);
+            if (currentCut < calculateCut(edges))
+            {
+                System.out.println("\t moving " + tmpVertex + " given it's cut of: " + calculateCut(edges));
+                currentCut = calculateCut(edges);
+            }
+            else
+            {
+                System.out.println("\t not moving " + tmpVertex + " given it's cut of " + calculateCut(edges));
+                System.arraycopy(oldS1, 0, s1, 0, oldS1.length);
+                System.arraycopy(oldS2, 0, s2, 0, oldS2.length);
+            }
         }
         
+    }
+
+    public static void outputSet(char[] set)
+    {
+        System.out.print(" {");
+        for(int ii = 0; ii < count(set); ii++)
+        {
+            System.out.print(set[ii] + ",");
+        }
+        System.out.print("} ");
+    }
+
+    public static char[] addVertex(char vertex, char[] set)
+    {
+        // can we fit one more??
+        if (count(set) + 1 <= set.length)
+        {
+            set[count(set)] = vertex;
+        }
+
+        return set;
+    }
+
+    public static char[] removeVertex(char vertex, char[] set)
+    {
+        boolean found = false;
+        int initalCount = count(set);
+        for( int ii = 0; ii < initalCount - 1; ii++)
+        {
+            if (set[ii] == vertex)
+            {
+                found = true;
+            }
+            
+            if (found == true)
+            {
+                set[ii] = set[ii+1];
+            }
+        }
+
+        set[initalCount - 1] = '\u0000';
+
+        return set;
     }
 
     /*
@@ -53,7 +123,7 @@ public class MaxCut
             char firstNode = vertex[ii];
             for (int jj = 0; jj < count(edges[ii]); jj++)
             {
-                if (edges[ii][jj] != '\u0000')
+                if (edges[ii][jj] != '\n')
                 {
                     if ( ! shareSet(firstNode, edges[ii][jj]))
                     {
@@ -64,7 +134,7 @@ public class MaxCut
                         {
                             if (connection[kk] == firstNode)
                             {
-                                edges[getPos(edges[ii][jj])][kk] = '\u0000';
+                                edges[getPos(edges[ii][jj])][kk] = '\n';
                             }
                         }
                     }
