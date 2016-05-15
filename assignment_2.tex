@@ -554,6 +554,60 @@
             \end{tabular}
         \end{multicols}
     \end{quoting}
+
+    b) Design a greedy algorithm to solve the Max-Cut problem. As part of
+    your solution, you must state your greedy criteria. Further, show your algorithm
+    in a concise but clear pseudo-code. You must explain in detail each line of the
+    pseudo-code and show how to implement the algorithm so that it has the best
+    possible time complexity. \\
+
+    \begin{quoting}
+
+        My algorithm will attempt to find the soltion to the Max Cut problem
+        by greedily selecting the vertex with the next highest degree,
+        ignoring previously cut links, and checking if swapping the subset it
+        belongs to will increase the max cut.
+
+        \begin{algorithm}[H]
+            \begin{algorithmic}[1]
+                \Function{MaxCut}{$G, V, E$}
+                \State{} $subSet = \emptyset$ \Comment{Declare a variable to store the subset we will be checking.}
+                \State{} $innerDegree = \emptyset$ \Comment{A variable to store our calculated inner degree.}
+
+                \State{} \Call{Randomize-Sets}{$V, subSet$} \Comment{Split the vertex's into a random pair of subsets.} \\
+
+                \For{each vertex $V$ as $vertex$} \Comment{For each vertex in the graph}
+                    \For{each $vertex.Adj$ as $edge$} \Comment{For each connected node of that vertex.}
+                        \If{\Call{In-Set}{$vertex, subSet$} $=$ \Call{In-Set}{$edge, subSet$}} \Comment{If they are in the same subset}
+                            \State{} $innerDegre.vertex = innerDegree.vertex + 1$ \Comment{Increment innerDegree}
+                        \EndIf{}
+                    \EndFor{}
+                \EndFor{} \\
+
+                \For{each $vertex$ within $innerDegree$ in descending order}
+                \State{} $oldSubSet = subSet$ \Comment{Keep track of last known cut}
+                    \State{} $curCut = \Call{calculateCut}{}$
+
+                    \If{$\Call{inSet}{vertex, subSet}$}
+                        \State{} $S = S - \{vertex\}$ \Comment{Remove the current vertex from the subset}
+                    \Else{}
+                        \State{} $S = S \cup \{vertex\}$ \Comment{Add the current vertex to the subset}
+                    \EndIf{}
+
+                    \If{$\Call{calculateCut}{} < curCut$} \Comment{We have increased the cut by switching}
+                    curCut = \Call{calculateCut}{} \Comment{Update the highest found cut
+                    \Else{}
+                    \Endif{}
+                \EndFor{}
+
+                \State{} 
+                \EndFunction{}
+            \end{algorithmic}
+            \caption{Greedy algorithm to solve the MaxCut Problem}
+        \end{algorithm}
+        
+    \end{quoting}
+
 \end{homeworkProblem}
 
 \end{document}
