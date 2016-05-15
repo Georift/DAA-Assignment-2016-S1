@@ -40,9 +40,17 @@
 \usepackage{quoting}
 \quotingsetup{vskip=0pt}
 
+\usepackage[plain]{algorithm}
+\usepackage{algpseudocode}
+\usepackage{subcaption}
+
 \usepackage{mathtools}
 \usepackage{amsmath, amsthm, amssymb}
 \usepackage[ansinew]{inputenc}
+
+\makeatletter
+\renewcommand{\boxed}[1]{\text{\fboxsep=.2em\fbox{\m@th$\displaystyle#1$}}}
+\makeatother
 
 % Margins
 \topmargin=-0.45in
@@ -289,58 +297,162 @@
 %----------------------------------------------------------------------------------------
 
 \begin{homeworkProblem}
+    \begin{figure}[H]
+        \begin{center}
+            \begin{tikzpicture}[>=stealth',shorten >=1pt,auto,node distance=2.5cm,
+                thick,main node/.style={circle,draw,font=\sffamily\Large\bfseries}]
 
-    \begin{center}
-        \begin{tikzpicture}[>=stealth',shorten >=1pt,auto,node distance=3cm,
-            thick,main node/.style={circle,draw,font=\sffamily\Large\bfseries}]
+                \node[main node] (A) {A};
+                \node[main node] (D) [below right of=A]{D};
+                \node[main node] (B) [above right of=D]{B};
+                \node[main node] (C) [below left of=A]{C};
+                \node[main node] (E) [below right of=B]{E};
+                \node[main node] (F) [below left of=D]{F};
+                \node[main node] (G) [below right of=D]{G};
 
-            %   \node[main node] (1) {1};
-            %   \node[main node] (2) [below left of=1] {2};
-            %   \node[main node] (3) [below right of=2] {3};
-            %   \node[main node] (4) [below right of=1] {4};
+                \path[every node/.style={font=\sffamily\small}]
+                (A) edge node [left] {0.9} (C)
+                    edge node [left] {0.8} (F)
+                    edge node [left] {0.9} (D)
+                    edge node [above] {0.6} (B)
+                (B) edge node [left] {0.85} (D)
+                    edge node [right] {0.8} (E)
+                (C) edge node [left] {0.95} (F)
+                (D) edge node [above] {0.7} (E)
+                    edge node [right] {0.9} (G)
+                    edge node [left] {0.8} (F)
+                (G) edge node [below] {0.9} (F)
+                    edge node [right] {0.95} (E);
+            \end{tikzpicture}
+        \end{center}
+        \caption{Undirected weighted graph}
+        \belowcaptionskip0cm
+        \label{graph1}
+    \end{figure}
 
-            \node[main node] (A) {A};
-            \node[main node] (D) [below right of=A]{D};
-            \node[main node] (B) [above right of=D]{B};
-            \node[main node] (C) [below left of=A]{C};
-            \node[main node] (E) [below right of=B]{E};
-            \node[main node] (F) [below left of=D]{F};
-            \node[main node] (G) [below right of=D]{G};
+    a) Design a \textit{greedy} algorithm that generates the most reliable path from
+    a source node s to every destination node $t$ in the network. Show your algorithm
+    in a concise and clear pseudo-code. Further, you must explain in detail each line
+    of your pseudo-code and show how to implement your algorithm so that it has the
+    best possible time complexity. \\
 
-            \path[every node/.style={font=\sffamily\small}]
-            (A) edge node [left] {0.9} (C)
-                edge node [left] {0.8} (F)
-                edge node [left] {0.9} (D)
-                edge node [above] {0.6} (B)
-            (B) edge node [left] {0.85} (D)
-                edge node [right] {0.8} (E)
-            (C) edge node [left] {0.95} (F)
-            (D) edge node [above] {0.7} (E)
-                edge node [right] {0.9} (G)
-                edge node [left] {0.8} (F)
-            (G) edge node [below] {0.9} (F)
-                edge node [right] {0.95} (E);
+    \textbf{Solution}
+    \begin{algorithm}[H]
+        \begin{algorithmic}[1]
+            \Function{Dijkstra}{$G, w, s$}
+            \State{} \Call{Initialize-Single-Source}{$G, s$}
+            \State{} $S = \emptyset$
+            \State{} $Q = G.V$
+                \While{$Q \neq \emptyset$}
+                    \State{} $u = \Call{Extract-Max}{$Q$} $
+                    \State{} $S = S \cup \{u\}$
+                    \For{each vertex $v \in G.Adj[u]$}
+                        \State{} \Call{Tense}{$u,v,w$}
+                    \EndFor
+                \EndWhile \EndFunction{}
+        \end{algorithmic}
+        \caption{Modified Dijkstra's Algorithm}
+        \label{alg:path}
+    \end{algorithm}
+    \begin{algorithm}[H]
+        \begin{algorithmic}[1]
+            \Function{Initialize-Single-Source}{$G, s$}
+                \For{each vertex $v \in G.V$}
+                    \State{} $v.d = \infty$
+                    \State{} $v.\pi = NIL$
+                \EndFor
+            \State{} $s.d = 1$
+            \EndFunction
+        \end{algorithmic}
+        \caption{Initialize our vertex's}
+    \end{algorithm}
+    \begin{algorithm}[H]
+        \begin{algorithmic}[1]
+            \Function{Tense}{$u, v, w$}
+                \If{$v.d < u.d * w(u,v)$}
+                    \State{} $v.d = u.d * w(u,v)$
+                    \State{} $v.\pi = u$
+                \EndIf
+            \EndFunction{}
+        \end{algorithmic}
+        \caption{Modified Relax Algorithm}
+    \end{algorithm}
 
+    \vskip0.5cm
 
+    b) Use your algorithm in part a) to generate the most reliable path from
+    node A to every other node for the given graph. List the most reliable paths and
+    their corresponding path reliabilities. 
 
-            %   \path[every node/.style={font=\sffamily\small}]
-            %   (1) edge node [left] {0.6} (4)
-            %   edge [bend right] node[left] {0.3} (2)
-            %   edge [loop above] node {0.1} (1)
-            %   (2) edge node [right] {0.4} (1)
-            %   edge node {0.3} (4)
-            %   edge [loop left] node {0.4} (2)
-            %   edge [bend right] node[left] {0.1} (3)
-            %   (3) edge node [right] {0.8} (2)
-            %   edge [bend right] node[right] {0.2} (4)
-            %   (4) edge node [left] {0.2} (3)
-            %   edge [loop right] node {0.6} (4)
-            %   edge [bend right] node[right] {0.2} (1);
-        \end{tikzpicture}
-    \end{center}
+    \begin{figure}[H]
+        \begin{center}
+            \begin{tabular}{*{8}{c |}}
+                & $A$ & $B$ & $C$ & $D$ & $E$ & $F$ & $G$ \\
+            \hline
+        $A$ & $\boxed{1}$ & $0.6$ & $0.9$ & $0.9$ & $\infty$ & $0.8$ & $\infty$ \\
+        $C$ & $1$ & $0.6$ & $\boxed{0.9}$ & $0.9$ & $\infty$ & $0.855$ & $\infty$ \\
+        $D$ & $1$ & $0.765$ & $0.9$ & $\boxed{0.9}$ & $0.63$ & $0.855$ & $0.81$ \\
+        $F$ & $1$ & $0.765$ & $0.9$ & $0.9$ & $0.63$ & $\boxed{0.855}$ & $0.81$ \\
+        $G$ & $1$ & $0.765$ & $0.9$ & $0.9$ & $0.7695$ & $0.8$ & $\boxed{0.81}$ \\
+        $E$ & $1$ & $0.765$ & $0.9$ & $0.9$ & $\boxed{0.7695}$ & $0.8$ & $0.81$ \\
+        $B$ & $1$ & $\boxed{0.765}$ & $0.9$ & $0.9$ & $0.7695$ & $0.8$ & $0.81$ \\
+            \end{tabular}
+            \caption{Result of Algorithm~\ref{alg:path}}
+            \label{path_result}
+        \end{center}
+    \end{figure}
 
+    \begin{quoting}
+        From the algorithm we have found the following paths to each node:
+        \begin{align}
+            B:&  \{A \to D \to B\} = 0.765 \notag \\
+            C:&  \{A \to C\} = 0.9  \notag \\
+            D:&  \{A \to D\} = 0.9  \notag \\
+            E:&  \{A \to D \to G \to E\} = 0.7695 \notag \\
+            F:&  \{A \to C \to F \} = 0.855 \notag \\
+            G:&  \{A \to D \to G \} = 0.81 \notag
+        \end{align}
+    \end{quoting}
 \end{homeworkProblem}
 
 %----------------------------------------------------------------------------------------
+
+\begin{homeworkProblem}
+    \begin{figure}[H]
+        \begin{center}
+            \begin{tikzpicture}[>=stealth',shorten >=1pt,auto,node distance=3cm,
+                thick,main node/.style={circle,draw,font=\sffamily\Large\bfseries}]
+
+                \node[main node] (A) {A};
+                \node[main node] (D) [below right of=A]{D};
+                \node[main node] (B) [above right of=D]{B};
+                \node[main node] (C) [below left of=A]{C};
+                \node[main node] (E) [below right of=B]{E};
+                \node[main node] (F) [below left of=D]{F};
+                \node[main node] (G) [below right of=D]{G};
+
+                \path[every node/.style={font=\sffamily\small}]
+                (A) edge node [left] {a} (C)
+                    edge node [left] {d} (F)
+                    edge node [left] {e} (D)
+                    edge node [above] {b} (B)
+                (B) edge node [left] {f} (D)
+                    edge node [right] {c} (E)
+                (C) edge node [left] {j} (F)
+                (D) edge node [above] {g} (E)
+                    edge node [right] {i} (G)
+                    edge node [left] {h} (F)
+                (G) edge node [below] {k} (F)
+                    edge node [right] {l} (E);
+            \end{tikzpicture}
+        \end{center}
+        \caption{Undirected weighted graph}
+        \belowcaptionskip0cm
+        \label{graph2}
+    \end{figure}
+
+    a) Generate all possible cuts in the given graph, and determine its
+    maximum cut. 
+\end{homeworkProblem}
 
 \end{document}
