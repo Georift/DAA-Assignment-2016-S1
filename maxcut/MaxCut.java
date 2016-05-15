@@ -1,7 +1,9 @@
 import java.io.*;
+import java.util.Random;
 
 public class MaxCut
-{ public static char[] vertex = {'A', 'B', 'C', 'D', 'E', 'F', 'G'};
+{ 
+    public static char[] vertex = {'A', 'B', 'C', 'D', 'E', 'F', 'G'};
     public static char[][] edges = 
     {
         {'C', 'F', 'D', 'B'},
@@ -16,9 +18,94 @@ public class MaxCut
     public static char s1[] = {'A', 'B', 'C', 'E', '\u0000', '\u0000', '\u0000'};
     public static char s2[] = {'D', 'F', 'G', '\u0000', '\u0000', '\u0000', '\u0000'};
 
+    public static void printAllSubsets(char[] arr) {
+        byte[] counter = new byte[arr.length];
+        int counting = 1;
+
+        int largestCut = 0;
+        int largestPos = 0;
+
+        while (true) {
+            int tmpCutSize;
+            s1 = new char[7];
+            s2 = new char[7];
+
+            // let s1 contain all vertex's V
+            for (int ii = 0; ii < vertex.length; ii++)
+            {
+                addVertex(vertex[ii], s1);
+            }
+            // Print combination
+            System.out.print(counting + " - ");
+            for (int i = 0; i < counter.length; i++) {
+                if (counter[i] != 0)
+                {
+                    addVertex(arr[i], s2);
+                    removeVertex(arr[i], s1);
+                    System.out.print(arr[i] + " ");
+                }
+            }
+
+            System.out.println();
+            outputSet(s1);
+            outputSet(s2);
+
+            tmpCutSize = calculateCut(edges);
+            if (tmpCutSize > largestCut)
+            {
+                largestCut = tmpCutSize;
+                largestPos = counting;
+            }
+
+            System.out.print("cut size = " + calculateCut(edges) + " ");
+
+            counting++;
+
+            // Increment counter
+            int i = 0;
+            while (i < counter.length && counter[i] == 1)
+                counter[i++] = 0;
+            if (i == counter.length)
+                break;
+
+            if (counting == 65)
+                break;
+
+            counter[i] = 1;
+        }
+
+        System.out.println("");
+        System.out.println("The largest cut was " + largestCut + " found at pos: " + largestPos);
+        System.out.println("");
+    }
+
     public static void main(String[] args)
     {
-        // assume the subgraphs have already been made
+        Random rand = new Random();
+
+        s1 = new char[7];
+        s2 = new char[7];
+
+        printAllSubsets(vertex);
+
+        for (int ll = 0; ll < count(vertex); ll++)
+        {
+            // generate either 0 or 1
+            if (rand.nextInt((1) + 1) % 2 == 0)
+            {
+                addVertex(vertex[ll], s1);
+            }
+            else
+            {
+                addVertex(vertex[ll], s2);
+            }
+        }
+        System.out.println("Randomly split the graph into:");
+        outputSet(s1);
+        outputSet(s2);
+        System.out.println("");
+
+
         char[] testEdges = getEdges('A');
 
         // compute the inner degree of all the nodes
@@ -65,6 +152,12 @@ public class MaxCut
                 System.arraycopy(oldS2, 0, s2, 0, oldS2.length);
             }
         }
+
+        System.out.println("-----------------");
+        System.out.println("Found a cut of size " + currentCut);
+        outputSet(s1);
+        outputSet(s2);
+        System.out.println("");
         
     }
 
@@ -92,21 +185,24 @@ public class MaxCut
     public static char[] removeVertex(char vertex, char[] set)
     {
         boolean found = false;
-        int initalCount = count(set);
-        for( int ii = 0; ii < initalCount - 1; ii++)
+        if (count(set) >= 1)
         {
-            if (set[ii] == vertex)
+            int initalCount = count(set);
+            for( int ii = 0; ii < initalCount - 1; ii++)
             {
-                found = true;
+                if (set[ii] == vertex)
+                {
+                    found = true;
+                }
+                
+                if (found == true)
+                {
+                    set[ii] = set[ii+1];
+                }
             }
-            
-            if (found == true)
-            {
-                set[ii] = set[ii+1];
-            }
-        }
 
-        set[initalCount - 1] = '\u0000';
+            set[initalCount - 1] = '\u0000';
+        }
 
         return set;
     }
