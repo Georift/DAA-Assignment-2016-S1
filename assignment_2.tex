@@ -38,6 +38,25 @@
 \usepackage{tikz}
 \usetikzlibrary{arrows,calc} 
 
+\usepackage{fancyvrb}
+
+% redefine \VerbatimInput
+\RecustomVerbatimCommand{\VerbatimInput}{VerbatimInput}%
+{
+    fontsize=\footnotesize,
+    %
+    frame=lines,  % top and bottom rule only
+    framesep=2em, % separation between frame and text
+    rulecolor=\color{Gray},
+    %
+    label=\fbox{\color{Black}JavaImplementationOutput.txt},
+    labelposition=topline,
+    %
+    commandchars=\|\(\), % escape character and argument delimiters for
+    % commands within the verbatim
+    commentchar=*        % comment character
+}
+
 \usepackage{quoting}
 \quotingsetup{vskip=0pt}
 
@@ -332,7 +351,7 @@
     \end{figure}
 
     a) Design a \textit{greedy} algorithm that generates the most reliable path from
-    a source node s to every destination node $t$ in the network. Show your algorithm
+    a source node $s$ to every destination node $t$ in the network. Show your algorithm
     in a concise and clear pseudo-code. Further, you must explain in detail each line
     of your pseudo-code and show how to implement your algorithm so that it has the
     best possible time complexity. \\
@@ -464,7 +483,7 @@
         \end{center}
 
         The order of these subsets is irrelivent as flipping the variables
-        will still produce the same cut.
+        will still produce the same cut. \\
 
 
         \begin{figure}[H]
@@ -496,7 +515,7 @@
 
                     %\draw[help lines] (-3,-5) grid (7,1);
 
-                    \draw [red] plot [smooth,looseness=4] coordinates {
+                    \draw [black,dashed] plot [smooth,tension=0.6,looseness=4] coordinates {
                         (5.8,-0.8) 
                         (5.2,-2.2) 
                         (5,-4.8) 
@@ -507,23 +526,11 @@
                         (-3,-1.5)
                         (0,-1)
                         (2.5,-0.5)
-                    (3.5,0.5)};
-                    %\draw [red] plot [smooth,looseness=4] coordinates {
-                    %($ (B) !.5! (E) $) 
-                    %($ (D) !.9! (E) $) 
-                    %($ (E) !.5! (G) $) 
-                    %($ (F) !.8! (G) $)
-                    %($ (D) !.6! (F) $)
-                    %($ (A) !.9! (F) $)
-                    %($ (C) !.6! (F) $)
-                    %($ (C) !.7! (A) $)
-                    %($ (A) !.5! (D) $)
-                    %($ (A) !.7! (B) $)};
+                        (3.5,0.5)};
                 \end{tikzpicture}
             \end{center}
-            \caption{Undirected weighted graph}
+            \caption{Showing the Max Cut given by $s_1 = \{B,C,D,G\}, s_2 = \{A,E,F\}$}
             \belowcaptionskip0cm
-            \label{graph2}
         \end{figure}
 
         \pagebreak
@@ -614,10 +621,12 @@
         This algorithm initially randomly generates a subset of the graph $G$.
         From there it will choose the verticies with the highest "internal"
         degree. If the cut is improved by swapping the verticie into the other
-        sub set it will accept that change.
+        sub set it will accept that change. \\
 
         \textit{Internal degree} is the number of edges excluding any that have
-        been removed by the cut.
+        been removed by the cut. \\
+
+        Discussion on implementation of this algorithm follows the pesudo code.
 
         \begin{algorithm}[H]
             \begin{algorithmic}[1]
@@ -722,8 +731,108 @@
             \end{algorithmic}
             \caption{Counts the number of edges broken by a specific cut.}
         \end{algorithm}
-
     \end{quoting}
+
+    \textbf{Max Cut Implementation} \\
+    \begin{quoting}
+       This algorithm uses multiple sets of vertices to try and generate the
+       Max Cut of a graph G. The pesudo code that is shown is using set logic
+       to describe opperations that are being performed on these sets. Because
+       of this the code looks far simplier than it would be finally implemented.
+       There are two main ways that this information can be represented in the final
+       implmentation, each having a few trade offs which need to be weighed up
+       relative to the situation. \\
+       
+       The first and simplest method is to use arrays, almost all programming
+       languages have some form of arrays as a primative data type. Arrays do
+       have a downside with respect to the time complexity of opperations on
+       them. In memory arrays are generally represented as a single chunk,
+       because of this adding or removing from anywhere but the end of the
+       array requires shuffling all the other pieces of information around.
+       Shuffling information around has a time complexity of $O(n)$ as the
+       worst case senario involves moving the entire arrary.  With in small
+       cases, much like the problem we have been given, this is not an issue as
+       the input size is low ($n = 7$). But for very large values of $n$ it can
+       become very troublesome as we do several additions and deletions per
+       input. \\
+
+       Another option is linked lists, these aren't usually an existing datatype
+       in most programming languages but can be made by bolting together various
+       other data types. Linked lists unlike arrays are represented as induvidual
+       blocks in memory with each storing a reference to the next node in the list.
+       As a result of this, we are able to easily add and delete elements without
+       having to shuffle things out of the way. The trade off for this is the
+       extra space that is required to store the references between each node.
+
+       There are several variations of linked lists which store different
+       references to try and bring down the time complexity. The traditional
+       linked list has references going in one directions with each only
+       pointing to the next node. While this does give us $O(1)$ complexity for
+       insertion and deletion we will still require $O(n)$ searching for each
+       of these operstions. We also aren't able to get back to the start of the
+       list once we have started traversing it. A good variation of the linked
+       list for this algorithm would have each node store the pointer to the
+       next node along with a pointer to the head and tail node (The very
+       first/last in the list). This would result in $O(1)$ insertion and 
+       deletion, assuming we have a refference to the node already. \\
+
+       By maintaining the head, tail and next references we are able to cut
+       down much of the time complexity of our set operations. \\
+
+       \begin{center}
+           \begin{tabular}{l | c | c}
+
+               Operation & Array & Linked List \\
+               \hline
+               Randomize-Set & $O(|V|)$ & $O(|V|)$ \\
+               In-Set & $O(|V|)$ & $O(1)$ \\
+               Calculate-Cut & $O(|V|^{2}.|E|)$ & $O(|V|.|E|)$ \\
+
+           \end{tabular}
+       \end{center}
+
+       Linked lists look like the obvious choice, but you must also take into
+       consideration what platform the final program will need to perform on.
+       If memory is an issue and it is acceptable to have some delays in time
+       then arrays are definitalty a good choice. However in the majority of
+       situations the computer running the program is going to have Gigabytes
+       of memory and it's unlikely this algorithm will use all of that. \\
+   \end{quoting}
+
+   c) Use your algorithm in part b) to generate the Max-Cut of the given
+   graph. Does your algorithm generate an optimal result? \\
+
+   \begin{quoting}
+
+       No, my algorithm will not always generate the optimal result, it's
+       unlikely for most greedy algorithms to generate the global optimal
+       result given they only look at the local level.  \\
+
+       This is part of the reason why I decided to use a random component
+       within this algoirthm, if the algorithm is presented with a graph
+       which has some tricky choices simply running it again may present
+       to the algorithm again in an arrangement it can handle. The MaxCut
+       problem solutions can easliy be ranked by the \textit{CalculateCut}
+       function and so running this algorithm several time and taking the
+       best solution is not a problem. \\
+
+       Below is an output from running an implementation of my algorithm
+       once. You can see in the first line even though the cut presented
+       initially was not great, the algorithm still managed to generate a
+       cut of a size 1 smaller than the optimal solution.
+
+       \VerbatimInput{singleRun}
+
+   \end{quoting}
+
+   d) Give a counter example to show that your greedy algorithm does not
+   always generate an optimal result.
+
+   \begin{quoting}
+
+   \end{quoting}
+
+
 
 \end{homeworkProblem}
 
