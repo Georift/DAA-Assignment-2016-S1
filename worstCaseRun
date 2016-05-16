@@ -1,0 +1,19 @@
+Randomly split the graph into:
+ {G,}  {A,B,C,D,E,F,A,}
+#0 select A cur cut = 3
+ {G,A,}  {B,C,D,E,F,A,}          moving A given it's cut of: 7
+#1 select B cur cut = 7
+ {G,A,B,}  {C,D,E,F,A,}          moving B given it's cut of: 8
+#2 select D cur cut = 8
+ {G,A,B,D,}  {C,E,F,A,}          not moving D given it's cut of 7
+#3 select C cur cut = 8
+ {G,A,B,C,}  {D,E,F,A,}          not moving C given it's cut of 8
+#4 select E cur cut = 8
+ {G,A,B,E,}  {C,D,F,A,}          not moving E given it's cut of 7
+#5 select F cur cut = 8
+ {G,A,B,F,}  {C,D,E,A,}          not moving F given it's cut of 8
+#6 select G cur cut = 8
+ {A,B,}  {C,D,E,F,A,G,}          not moving G given it's cut of 5
+-----------------
+Found a cut of size 8
+ {G,A,B,}  {C,D,E,F,A,}

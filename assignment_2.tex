@@ -231,7 +231,7 @@
 
 \begin{homeworkProblem}
 
-    a) Use the Master method solve the folloing recurrence function:
+    a) Use the Master method solve the following recurrence function:
     \begin{center}
         $T(n) = 3T(\sqrt[2]{n}) + \log_2{n}$
     \end{center}
@@ -245,15 +245,15 @@
             T(2^k) & = 3T(2^{\frac{k}{2}}) + k \notag \\
             \shortintertext{Now in the master thereom form:}
             T(n) & = aT(n/b) + f(n) \notag \\
-            \shortintertext{Where:}
+            \shortintertext{We get:}
             a = 3, b & = 2, f(n) = k \notag
             \shortintertext{Checking which master thereom case to use:}
             k^{\log_b{a}} & = k^{\log_2{3}} \approx k^{1.6} \notag \\
             k^{1} & < k^{1.6} \notag
         \end{align}
         \begin{center}
-            $\therefore$ case 1 of master thereom \\
-            The solution to the recurance is $O(\log_2{n}^{\log_2{3}})$.
+            $\therefore$ case 1 of master theorem \\
+            The solution to the recurrence is $O(\log_2{n}^{\log_2{3}})$ after substituting for k.
         \end{center}
     \end{quoting}
     \vskip0.5cm
@@ -266,10 +266,10 @@
     prove that the time complexity is correct. \\
 
     \textbf{Solution}
-
+    \vskip0.3cm
     \begin{quoting}
-        Assuming that $T(1) = 1$ lets calculate the first few values of the
-        the recurrance to get an idea of the function.
+        Assuming that $T(1) = 1$ lets calculate the first few values of
+        the recurrence to get an idea of the function.
         \begin{align}
             T(1) & = 1 \notag \\
             T(2) & = 2(1) + 1 = 3 \notag \\
@@ -277,7 +277,7 @@
             T(4) & = 2(7) + 1 = 15 \notag
         \end{align}
 
-        The initial values of the recurrance appears to be $2^{n} - 1$. Lets
+        The initial values of the recurrence appears to be $2^{n} - 1$. Lets
         try and prove this by induction. \\
 
         \textbf{Inductive Hypothesis}
@@ -306,7 +306,7 @@
             Same form as our hypothesis
         \end{center}
         \vskip0.5cm
-        We have proven through induction that the recurance has an upper 
+        We have proven through induction that the recurrence has an upper 
         bound time complexity of $O(2^n)$.
     \end{quoting}
 
@@ -360,14 +360,14 @@
     \begin{algorithm}[H]
         \begin{algorithmic}[1]
             \Function{ReliablePath}{$G, w, s$}
-            \State{} \Call{Initialize-Single-Source}{$G, s$} \Comment{Sets all but the root vertice to unreachable}
+            \State{} \Call{Initialize-Single-Source}{$G, s$} \Comment{Sets all but the root vertex to unreachable}
             \State{} $S = \emptyset$ \Comment{S is our final output, starts off as empty}
             \State{} $Q = G.V$ \Comment{Adds in the vertices we currently have a path to}
                 \While{$Q \neq \emptyset$} \Comment{While we still have vertices that haven't been checked}
                 \State{} $u = \Call{Extract-Max}{$Q$} $ \Comment{Removes the largest/most reliable vertex from $Q$}
                     \State{} $S = S \cup \{u\}$ \Comment{Mark the node we have just visited}
                     \For{each vertex $v \in G.Adj[u]$} \Comment{For each vertex with a path from our current vertex}
-                        \State{} \Call{Tense}{$u,v,w$} \Comment{Inverse of relax, trys to increase value of the path}
+                        \State{} \Call{Tense}{$u,v,w$} \Comment{Inverse of relax, tries to increase value of the path}
                     \EndFor
                 \EndWhile \EndFunction{}
         \end{algorithmic}
@@ -378,7 +378,7 @@
         \begin{algorithmic}[1]
             \Function{Initialize-Single-Source}{$G, s$}
             \For{each vertex $v \in G.V$} \Comment{For every vertex within the graph}
-                \State{} $v.d = \infty$ \Comment{We don't yet have a path to each vertice therefore $\infty$ for no route}
+                \State{} $v.d = \infty$ \Comment{We don't yet have a path to each vertex therefore $\infty$ for no route}
                 \State{} $v.\pi = NIL$ \Comment{Again we haven't got a path so set all parents to nothing}
             \EndFor
             \State{} $s.d = 1$ \Comment{We don't have to travel anywhere from the root therefore $100\%$ reliability}
@@ -397,6 +397,33 @@
         \end{algorithmic}
         \caption{Modified Relax Algorithm}
     \end{algorithm}
+
+    \begin{center}
+        \textit{Extract-Max not shown given it vary's depending how it's implemented}
+    \end{center}
+
+    \textbf{Modified Dijkstra's Implementation}
+
+    \begin{quoting} 
+        
+        Because this is a greedy algorithm it is always selecting outliers, the
+        largest in this case, to step into next. There are two obvious ways we
+        can go ahead and implement this algorithm, primitive arrays or the
+        priority queue. \\
+
+        The simplest to implement is the array method, which at every step
+        would require the algorithm to check every vertex to find the max.
+        This is an $O(|V|)$ operation, and given we will have to do it for
+        every single node we visit it's clear to see it will become $0(|V|^2)$
+        which we know is not a good complexity for large input sizes. \\
+
+        Another option is to choose a priority queue which can be implemented
+        using a max heap. All basic operations on a heap are $O(\log_2{|V|})$
+        which after visiting every vertex and performing extract max would be
+        $O(|V|\log_2{|V|})$. For large input sizes we can see that the priority
+        is favorable. \\
+
+    \end{quoting}
 
     \vskip0.5cm
 
@@ -423,7 +450,7 @@
     \end{figure}
 
     \begin{quoting}
-        From the algorithm we have found the following paths to each node:
+        From the algorithm I have found the following paths to each node:
         \begin{align}
             B:&  \{A \to D \to B\} = 0.765 \notag \\
             C:&  \{A \to C\} = 0.9  \notag \\
@@ -476,13 +503,13 @@
 
     \begin{quoting}
         After generating all of the possible cuts, I found the largest cut
-        had a size of 9 and occured with the following subsets.
+        had a size of 9 and came from the following subsets:
 
         \begin{center}
             $s_1 = \{B,C,D,G\}, s_2 = \{A,E,F\}$
         \end{center}
 
-        The order of these subsets is irrelivent as flipping the variables
+        The order of these subsets is irrelevant as flipping the variables
         will still produce the same cut. \\
 
 
@@ -536,9 +563,9 @@
         \pagebreak
         \textbf{All possible cuts of a 7 vertex graph.} \\
         The number of subgraphs possible for any given graph
-        is defined as $2^{n} - 2$ but we only need half of 
-        theses as changing the order of the variables does 
-        not produce any new cuts.
+        is defined as $2^{n} - 2$ however because when reversing
+        the subsets the cuts that will be produced are the same we
+        can half this to get: $2^{n}/2 -1$
         \begin{multicols}{2}
             \begin{tabular}{l l | }
                 $\{B,C,D,E,F,G\}$ &$\{A\}$ \\
@@ -619,14 +646,15 @@
     \begin{quoting}
 
         This algorithm initially randomly generates a subset of the graph $G$.
-        From there it will choose the verticies with the highest "internal"
-        degree. If the cut is improved by swapping the verticie into the other
-        sub set it will accept that change. \\
+        From there it will choose the vertices with the highest "internal"
+        degree. If the cut is improved by swapping the vertices into the other
+        subset it will accept that change. \\
 
         \textit{Internal degree} is the number of edges excluding any that have
-        been removed by the cut. \\
+        been removed by the cut. This is the \textbf{greedy criteria} for this
+        algorithm with the largest being taken every time. \\
 
-        Discussion on implementation of this algorithm follows the pesudo code.
+        Discussion on implementation of this algorithm follows the pseudo-code.
 
         \begin{algorithm}[H]
             \begin{algorithmic}[1]
@@ -634,32 +662,32 @@
                 \State{} $subSet = \emptyset$ \Comment{Declare a variable to store the subset we will be checking.}
                 \State{} $innerDegree = \emptyset$ \Comment{A variable to store our calculated inner degree.}
 
-                \State{} $subSet = \Call{Randomize-Sets}{V}$ \Comment{Split the vertex's into a random pair of subsets.} \\
+                \State{} $subSet = \Call{Randomize-Sets}{V}$ \Comment{Split the vertices into a random pair of subsets.} \\
 
                 \For{each $vertex$ in $V$} \Comment{For each vertex in the graph}
-                    \For{each $vertex.Adj$ as $edge$} \Comment{For each connected node of that vertex.}
-                        \If{\Call{In-Set}{$vertex, subSet$} $=$ \Call{In-Set}{$edge, subSet$}} \Comment{If they are in the same subset}
-                            \State{} $innerDegre.vertex = innerDegree.vertex + 1$ \Comment{Increment innerDegree}
+                    \For{each $vertex.Adj$ as $adj$} \Comment{For each connected node of that vertex.}
+                        \If{\Call{In-Set}{$vertex, subSet$} $=$ \Call{In-Set}{$adj, subSet$}} \Comment{If they are in the same subset}
+                            \State{} $innerDegree.vertex = innerDegree.vertex + 1$ \Comment{Increment innerDegree}
                         \EndIf{}
                     \EndFor{}
                 \EndFor{} \\
 
-                \For{each $vertex$ within $innerDegree$ in descending order} \Comment{The greedy condition}
-                \State{} $oldSubSet = subSet$ \Comment{Keep track of last known cut}
-                    \State{} $curCut = \Call{calculateCut}{}$
+                \For{each $vertex \in innerDegree$ in descending order} \Comment{\textbf{The greedy condition}}
+                \State{}$oldSubSet = subSet$ \Comment{Keep track of last known cut}
+                    \State{}$curCut = \Call{calculateCut}{V, subSet}$ \Comment{For comparing with the newly generated cut}
 
                     \If{$\Call{inSet}{vertex, subSet}$}
-                        \State{} $S = S - \{vertex\}$ \Comment{Remove the current vertex from the subset}
+                        \State{}$subSet = subSet - \{vertex\}$ \Comment{Remove the current vertex from the subset}
                     \Else{}
-                        \State{} $S = S \cup \{vertex\}$ \Comment{Add the current vertex to the subset}
+                        \State{}$subSet = subSet \cup \{vertex\}$ \Comment{Add the current vertex to the subset}
                     \EndIf{} \\
 
-                    \If{$\Call{calculateCut}{} > curCut$} \Comment{If we found a larger cut, save it}
-                        \State{} curCut = \Call{calculateCut}{} \Comment{Update the highest found cut}
-                    \Else{}
-                        \State{} $subSet = oldSubSet$ \Comment{We haven't found a larger cut revert the changes}
+                    \If{$\Call{calculateCut}{V, subSet} \le curCut$} \Comment{Revert changes if no improvement}
+                        \State{}$subSet = oldSubSet$ \Comment{We haven't found a larger cut revert the changes}
                     \EndIf{}
                 \EndFor{} \\
+
+                \State{}\Return{$subSet$} \Comment{Only need $subSet$ since the other is $V - subSet$}
                 \EndFunction{}
             \end{algorithmic}
             \caption{Greedy algorithm to solve the MaxCut Problem}
@@ -697,13 +725,13 @@
         \begin{algorithm}[H]
             \begin{algorithmic}[1]
                 \Function{In-Set}{$v, subSet$}
-
-                \If{$v \in subSet$} 
-                        \State{}\Return{true}
+                    \State{}$retVal = false$ \Comment{To prevent double returns}
+                    \If{$v \in subSet$} 
+                        \State{}$retVAl = true$ \Comment{The vertex was found within the set}
                     \Else{}
-                        \State{}\Return{false}
+                        \State{}$retVal = false$ \Comment{The vertex was not found within the set}
                     \EndIf{}
-
+                    \State{}\Return{$retVal$}
                 \EndFunction{}
             \end{algorithmic}
             \caption{Checks if a vertex $v$ is contained in $subSet$}
@@ -712,21 +740,17 @@
         \begin{algorithm}[H]
             \begin{algorithmic}[1]
                 \Function{Calculate-Cut}{$V, subSet$}
-
                     \State{}$cut = 0$
-
-                    \For{each vertex $v \in v$}
-
-                        \For{each edge $e \in v.Adj$}
+                    \For{each vertex $v \in V$} \Comment{For each vertex in the graph}
+                        \For{each edge $e \in v.Adj$} \Comment{For each vertex connected to our current vertex}
                             \If{$\Call{In-Set}{v, subSet} \not= \Call{In-Set}{e, subSet}$}  \Comment{Checks if nodes are in different sets}
-                                \State{}$cut = cut + 1$ \Comment{Given at most two subSets we only need one condition}
+                                \State{}$cut = cut + 1$ \Comment{Given at most two subsets we only need one condition}
 
                                 \State{}$e.Adj = e.Adj - {v}$ \Comment{Remove the inverse of the path to prevent double counts}
                             \EndIf
                         \EndFor
-
                     \EndFor
-
+                    \State{}\Return{$cut$}
                 \EndFunction{}
             \end{algorithmic}
             \caption{Counts the number of edges broken by a specific cut.}
@@ -736,45 +760,46 @@
     \textbf{Max Cut Implementation} \\
     \begin{quoting}
        This algorithm uses multiple sets of vertices to try and generate the
-       Max Cut of a graph G. The pesudo code that is shown is using set logic
-       to describe opperations that are being performed on these sets. Because
-       of this the code looks far simplier than it would be finally implemented.
+       Max Cut of a graph G. The pseudo-code that is shown is using set logic
+       to describe operations that are being performed on these sets. Because
+       of this the code looks far simpler than it would be finally implemented.
        There are two main ways that this information can be represented in the final
-       implmentation, each having a few trade offs which need to be weighed up
+       implementation, each having a few trade offs which need to be weighed up
        relative to the situation. \\
        
        The first and simplest method is to use arrays, almost all programming
-       languages have some form of arrays as a primative data type. Arrays do
-       have a downside with respect to the time complexity of opperations on
+       languages have some form of arrays as a primitive data type. Arrays do
+       have a downside with respect to the time complexity of operations on
        them. In memory arrays are generally represented as a single chunk,
        because of this adding or removing from anywhere but the end of the
        array requires shuffling all the other pieces of information around.
        Shuffling information around has a time complexity of $O(n)$ as the
-       worst case senario involves moving the entire arrary.  With in small
-       cases, much like the problem we have been given, this is not an issue as
-       the input size is low ($n = 7$). But for very large values of $n$ it can
-       become very troublesome as we do several additions and deletions per
-       input. \\
+       worst case scenario involves shuffling the entire array.  With small
+       cases, much like the problem we have been given, this is not as big of
+       an issue as the input size is low ($n = 7$). But for very large values
+       of $n$ it can become very troublesome as we do several additions and
+       deletions per input. \\
 
-       Another option is linked lists, these aren't usually an existing datatype
+       Another option is linked lists, these aren't usually an existing data type
        in most programming languages but can be made by bolting together various
-       other data types. Linked lists unlike arrays are represented as induvidual
+       other primitives. Linked lists unlike arrays are represented as individual
        blocks in memory with each storing a reference to the next node in the list.
        As a result of this, we are able to easily add and delete elements without
        having to shuffle things out of the way. The trade off for this is the
        extra space that is required to store the references between each node.
 
        There are several variations of linked lists which store different
-       references to try and bring down the time complexity. The traditional
-       linked list has references going in one directions with each only
-       pointing to the next node. While this does give us $O(1)$ complexity for
-       insertion and deletion we will still require $O(n)$ searching for each
-       of these operstions. We also aren't able to get back to the start of the
-       list once we have started traversing it. A good variation of the linked
-       list for this algorithm would have each node store the pointer to the
-       next node along with a pointer to the head and tail node (The very
-       first/last in the list). This would result in $O(1)$ insertion and 
-       deletion, assuming we have a refference to the node already. \\
+       arrangements of references to try and bring down the time complexity.
+       The traditional linked list has references going in one directions with
+       each only pointing to the next node. While this does give us $O(1)$
+       complexity for insertion and deletion we will still require $O(n)$
+       searching for each of these operations. We also aren't able to get back
+       to the start of the list once we have started traversing it. A good
+       variation of the linked list for this algorithm would have each node
+       store the pointer to the next node along with a pointer to the head and
+       tail node (The very first/last in the list). This would result in $O(1)$
+       insertion and deletion, assuming we have a reference to the node
+       already. \\
 
        By maintaining the head, tail and next references we are able to cut
        down much of the time complexity of our set operations. \\
@@ -790,13 +815,15 @@
 
            \end{tabular}
        \end{center}
+
+       \vskip0.5cm
        
        Linked lists look like the obvious choice, but you must also take into
        consideration what platform the final program will need to perform on.
        If memory is an issue and it is acceptable to have some delays in time
-       then arrays are definitalty a good choice. However in the majority of
+       then arrays are definitely a good choice. However in the majority of
        situations the computer running the program is going to have Gigabytes
-       of memory and it's unlikely this algorithm will use all of that. \\
+       of memory and it's unlikely this algorithm will utilize all of that. \\
    \end{quoting}
 
    c) Use your algorithm in part b) to generate the Max-Cut of the given
@@ -806,13 +833,13 @@
 
        No, my algorithm will not always generate the optimal result, it's
        unlikely for most greedy algorithms to generate the global optimal
-       result given they only look at the local level.  \\
+       result given they only make choices at the local level.  \\
 
        This is part of the reason why I decided to use a random component
-       within this algoirthm, if the algorithm is presented with a graph
+       within this algorithm, if the algorithm is presented with a graph
        which has some tricky choices simply running it again may present
        to the algorithm again in an arrangement it can handle. The MaxCut
-       problem solutions can easliy be ranked by the \textit{CalculateCut}
+       problem solutions can easily be ranked by the \textit{CalculateCut}
        function and so running this algorithm several time and taking the
        best solution is not a problem. \\
 
@@ -832,22 +859,17 @@
 
        The output in the previous section shows a counter example of when
        the algorithm will not generate the optimal cut. Unlike some other
-       algorithms because it is generating the inital sets randomly the
+       algorithms because it is generating the initial sets randomly the
        result will change between runs, in this case with 63 different
        sub trees.
 
-      %My algorithm particually falls down when the subsets aren't even,
+      %My algorithm particularly falls down when the subsets aren't even,
       %take the example of $s_1 = {G}, s_2 = {A, B, C, D, E, F}$, you can
-      %see this is the worst possible case for the algoirthm given the is
-      %absoultely no internal links within $s_1$ and within $s_2$ they are
+      %see this is the worst possible case for the algorithm given the is
+      %absolutely no internal links within $s_1$ and within $s_2$ they are
       %basically all interlinked. What will end up happening in this situation
       %is the sets will likely reverse and the cut we get at the end is simply
       %the randomly generated one at the start.
-
    \end{quoting}
-
-
-
 \end{homeworkProblem}
-
 \end{document}
