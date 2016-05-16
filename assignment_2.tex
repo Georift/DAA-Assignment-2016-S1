@@ -826,9 +826,17 @@
    \end{quoting}
 
    d) Give a counter example to show that your greedy algorithm does not
-   always generate an optimal result.
+   always generate an optimal result. \\
 
    \begin{quoting}
+
+       My algorithm particually falls down when the subsets aren't even,
+       take the example of $s_1 = {G}, s_2 = {A, B, C, D, E, F}$, you can
+       see this is the worst possible case for the algoirthm given the is
+       absoultely no internal links within $s_1$ and within $s_2$ they are
+       basically all interlinked. What will end up happening in this situation
+       is the sets will likely reverse and the cut we get at the end is simply
+       the randomly generated one at the start.
 
    \end{quoting}
 
