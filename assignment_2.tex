@@ -253,7 +253,7 @@
         \end{align}
         \begin{center}
             $\therefore$ case 1 of master thereom \\
-            The solution to the recurance is $O(n^{\log_2{3}})$.
+            The solution to the recurance is $O(\log_2{n}^{\log_2{3}})$.
         \end{center}
     \end{quoting}
     \vskip0.5cm
@@ -359,15 +359,15 @@
     \textbf{Solution}
     \begin{algorithm}[H]
         \begin{algorithmic}[1]
-            \Function{Dijkstra}{$G, w, s$}
-            \State{} \Call{Initialize-Single-Source}{$G, s$}
-            \State{} $S = \emptyset$
-            \State{} $Q = G.V$
-                \While{$Q \neq \emptyset$}
-                    \State{} $u = \Call{Extract-Max}{$Q$} $
-                    \State{} $S = S \cup \{u\}$
-                    \For{each vertex $v \in G.Adj[u]$}
-                        \State{} \Call{Tense}{$u,v,w$}
+            \Function{ReliablePath}{$G, w, s$}
+            \State{} \Call{Initialize-Single-Source}{$G, s$} \Comment{Sets all but the root vertice to unreachable}
+            \State{} $S = \emptyset$ \Comment{S is our final output, starts off as empty}
+            \State{} $Q = G.V$ \Comment{Adds in the vertices we currently have a path to}
+                \While{$Q \neq \emptyset$} \Comment{While we still have vertices that haven't been checked}
+                \State{} $u = \Call{Extract-Max}{$Q$} $ \Comment{Removes the largest/most reliable vertex from $Q$}
+                    \State{} $S = S \cup \{u\}$ \Comment{Mark the node we have just visited}
+                    \For{each vertex $v \in G.Adj[u]$} \Comment{For each vertex with a path from our current vertex}
+                        \State{} \Call{Tense}{$u,v,w$} \Comment{Inverse of relax, trys to increase value of the path}
                     \EndFor
                 \EndWhile \EndFunction{}
         \end{algorithmic}
@@ -377,21 +377,21 @@
     \begin{algorithm}[H]
         \begin{algorithmic}[1]
             \Function{Initialize-Single-Source}{$G, s$}
-                \For{each vertex $v \in G.V$}
-                    \State{} $v.d = \infty$
-                    \State{} $v.\pi = NIL$
-                \EndFor
-            \State{} $s.d = 1$
+            \For{each vertex $v \in G.V$} \Comment{For every vertex within the graph}
+                \State{} $v.d = \infty$ \Comment{We don't yet have a path to each vertice therefore $\infty$ for no route}
+                \State{} $v.\pi = NIL$ \Comment{Again we haven't got a path so set all parents to nothing}
+            \EndFor
+            \State{} $s.d = 1$ \Comment{We don't have to travel anywhere from the root therefore $100\%$ reliability}
             \EndFunction
         \end{algorithmic}
         \caption{Initialize our vertex's}
     \end{algorithm}
     \begin{algorithm}[H]
         \begin{algorithmic}[1]
-            \Function{Tense}{$u, v, w$}
-                \If{$v.d < u.d * w(u,v)$}
-                    \State{} $v.d = u.d * w(u,v)$
-                    \State{} $v.\pi = u$
+            \Function{Tense}{$u, v, w$} \Comment{This function is the inverse of relax, it aims to increase the path value}
+                \If{$v.d < u.d * w(u,v)$} \Comment{Using product instead of sum, picks the larger value (Higher reliability)}
+                    \State{} $v.d = u.d * w(u,v)$ \Comment{If our new path is better, save the value to the vertex}
+                    \State{} $v.\pi = u$ \Comment{Update the parent to our current vertex}
                 \EndIf
             \EndFunction{}
         \end{algorithmic}
@@ -790,7 +790,7 @@
 
            \end{tabular}
        \end{center}
-
+       
        Linked lists look like the obvious choice, but you must also take into
        consideration what platform the final program will need to perform on.
        If memory is an issue and it is acceptable to have some delays in time
@@ -830,13 +830,19 @@
 
    \begin{quoting}
 
-       My algorithm particually falls down when the subsets aren't even,
-       take the example of $s_1 = {G}, s_2 = {A, B, C, D, E, F}$, you can
-       see this is the worst possible case for the algoirthm given the is
-       absoultely no internal links within $s_1$ and within $s_2$ they are
-       basically all interlinked. What will end up happening in this situation
-       is the sets will likely reverse and the cut we get at the end is simply
-       the randomly generated one at the start.
+       The output in the previous section shows a counter example of when
+       the algorithm will not generate the optimal cut. Unlike some other
+       algorithms because it is generating the inital sets randomly the
+       result will change between runs, in this case with 63 different
+       sub trees.
+
+      %My algorithm particually falls down when the subsets aren't even,
+      %take the example of $s_1 = {G}, s_2 = {A, B, C, D, E, F}$, you can
+      %see this is the worst possible case for the algoirthm given the is
+      %absoultely no internal links within $s_1$ and within $s_2$ they are
+      %basically all interlinked. What will end up happening in this situation
+      %is the sets will likely reverse and the cut we get at the end is simply
+      %the randomly generated one at the start.
 
    \end{quoting}
 
