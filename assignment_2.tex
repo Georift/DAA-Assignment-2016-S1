@@ -445,18 +445,6 @@
                     edge node [left] {h} (F)
                 (G) edge node [below] {k} (F)
                     edge node [right] {l} (E);
-
-                    \draw [red] plot [smooth,tension=0.5] coordinates {
-                    ($ (B) !.5! (E) $) 
-                    ($ (D) !.9! (E) $) 
-                    ($ (E) !.5! (G) $) 
-                    ($ (F) !.8! (G) $)
-                    ($ (D) !.6! (F) $)
-                    ($ (A) !.9! (F) $)
-                    ($ (C) !.6! (F) $)
-                    ($ (C) !.7! (A) $)
-                    ($ (A) !.5! (D) $)
-                    ($ (A) !.7! (B) $)};
             \end{tikzpicture}
         \end{center}
         \caption{Undirected weighted graph}
@@ -477,6 +465,66 @@
 
         The order of these subsets is irrelivent as flipping the variables
         will still produce the same cut.
+
+
+        \begin{figure}[H]
+            \begin{center}
+                \begin{tikzpicture}[>=stealth',shorten >=1pt,auto,node distance=3cm,
+                    thick,main node/.style={circle,draw,font=\sffamily\Large\bfseries}]
+
+                    \node[main node] (A) {A};
+                    \node[main node] (D) [below right of=A]{D};
+                    \node[main node] (B) [above right of=D]{B};
+                    \node[main node] (C) [below left of=A]{C};
+                    \node[main node] (E) [below right of=B]{E};
+                    \node[main node] (F) [below left of=D]{F};
+                    \node[main node] (G) [below right of=D]{G};
+
+                    \path[every node/.style={font=\sffamily\small}]
+                    (A) edge node [left] {a} (C)
+                    edge node [left] {d} (F)
+                    edge node [left] {e} (D)
+                    edge node [above] {b} (B)
+                    (B) edge node [left] {f} (D)
+                    edge node [right] {c} (E)
+                    (C) edge node [left] {j} (F)
+                    (D) edge node [above] {g} (E)
+                    edge node [right] {i} (G)
+                    edge node [left] {h} (F)
+                    (G) edge node [below] {k} (F)
+                    edge node [right] {l} (E);
+
+                    %\draw[help lines] (-3,-5) grid (7,1);
+
+                    \draw [red] plot [smooth,looseness=4] coordinates {
+                        (5.8,-0.8) 
+                        (5.2,-2.2) 
+                        (5,-4.8) 
+                        (2.5,-4.2)
+                        (1.1,-3.3)
+                        (0,-3.2)
+                        (-2.5,-3)
+                        (-3,-1.5)
+                        (0,-1)
+                        (2.5,-0.5)
+                    (3.5,0.5)};
+                    %\draw [red] plot [smooth,looseness=4] coordinates {
+                    %($ (B) !.5! (E) $) 
+                    %($ (D) !.9! (E) $) 
+                    %($ (E) !.5! (G) $) 
+                    %($ (F) !.8! (G) $)
+                    %($ (D) !.6! (F) $)
+                    %($ (A) !.9! (F) $)
+                    %($ (C) !.6! (F) $)
+                    %($ (C) !.7! (A) $)
+                    %($ (A) !.5! (D) $)
+                    %($ (A) !.7! (B) $)};
+                \end{tikzpicture}
+            \end{center}
+            \caption{Undirected weighted graph}
+            \belowcaptionskip0cm
+            \label{graph2}
+        \end{figure}
 
         \pagebreak
         \textbf{All possible cuts of a 7 vertex graph.} \\
@@ -632,8 +680,9 @@
         \pagebreak
         \begin{center}
             \textit{In-Set} when expressed using set logic seems very trivial,
-            however when implementing it a while loop will be required and thus
-            it's useful to extract the code into it's own function. \\
+            however when implementing it either a while loop or linked lists 
+            will be required and thus it's useful to extract the code into 
+            it's own function. \\
         \end{center}
 
         \begin{algorithm}[H]
@@ -649,6 +698,29 @@
                 \EndFunction{}
             \end{algorithmic}
             \caption{Checks if a vertex $v$ is contained in $subSet$}
+        \end{algorithm}
+        
+        \begin{algorithm}[H]
+            \begin{algorithmic}[1]
+                \Function{Calculate-Cut}{$V, subSet$}
+
+                    \State{}$cut = 0$
+
+                    \For{each vertex $v \in v$}
+
+                        \For{each edge $e \in v.Adj$}
+                            \If{$\Call{In-Set}{v, subSet} \not= \Call{In-Set}{e, subSet}$}  \Comment{Checks if nodes are in different sets}
+                                \State{}$cut = cut + 1$ \Comment{Given at most two subSets we only need one condition}
+
+                                \State{}$e.Adj = e.Adj - {v}$ \Comment{Remove the inverse of the path to prevent double counts}
+                            \EndIf
+                        \EndFor
+
+                    \EndFor
+
+                \EndFunction{}
+            \end{algorithmic}
+            \caption{Counts the number of edges broken by a specific cut.}
         \end{algorithm}
 
     \end{quoting}
