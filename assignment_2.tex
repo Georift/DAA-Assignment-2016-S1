@@ -563,10 +563,13 @@
 
     \begin{quoting}
 
-        My algorithm will attempt to find the soltion to the Max Cut problem
-        by greedily selecting the vertex with the next highest degree,
-        ignoring previously cut links, and checking if swapping the subset it
-        belongs to will increase the max cut.
+        This algorithm initially randomly generates a subset of the graph $G$.
+        From there it will choose the verticies with the highest "internal"
+        degree. If the cut is improved by swapping the verticie into the other
+        sub set it will accept that change.
+
+        \textit{Internal degree} is the number of edges excluding any that have
+        been removed by the cut.
 
         \begin{algorithm}[H]
             \begin{algorithmic}[1]
@@ -574,9 +577,9 @@
                 \State{} $subSet = \emptyset$ \Comment{Declare a variable to store the subset we will be checking.}
                 \State{} $innerDegree = \emptyset$ \Comment{A variable to store our calculated inner degree.}
 
-                \State{} \Call{Randomize-Sets}{$V, subSet$} \Comment{Split the vertex's into a random pair of subsets.} \\
+                \State{} $subSet = \Call{Randomize-Sets}{V}$ \Comment{Split the vertex's into a random pair of subsets.} \\
 
-                \For{each vertex $V$ as $vertex$} \Comment{For each vertex in the graph}
+                \For{each $vertex$ in $V$} \Comment{For each vertex in the graph}
                     \For{each $vertex.Adj$ as $edge$} \Comment{For each connected node of that vertex.}
                         \If{\Call{In-Set}{$vertex, subSet$} $=$ \Call{In-Set}{$edge, subSet$}} \Comment{If they are in the same subset}
                             \State{} $innerDegre.vertex = innerDegree.vertex + 1$ \Comment{Increment innerDegree}
@@ -584,7 +587,7 @@
                     \EndFor{}
                 \EndFor{} \\
 
-                \For{each $vertex$ within $innerDegree$ in descending order}
+                \For{each $vertex$ within $innerDegree$ in descending order} \Comment{The greedy condition}
                 \State{} $oldSubSet = subSet$ \Comment{Keep track of last known cut}
                     \State{} $curCut = \Call{calculateCut}{}$
 
@@ -592,20 +595,62 @@
                         \State{} $S = S - \{vertex\}$ \Comment{Remove the current vertex from the subset}
                     \Else{}
                         \State{} $S = S \cup \{vertex\}$ \Comment{Add the current vertex to the subset}
-                    \EndIf{}
+                    \EndIf{} \\
 
-                    \If{$\Call{calculateCut}{} < curCut$} \Comment{We have increased the cut by switching}
-                    curCut = \Call{calculateCut}{} \Comment{Update the highest found cut
+                    \If{$\Call{calculateCut}{} > curCut$} \Comment{If we found a larger cut, save it}
+                        \State{} curCut = \Call{calculateCut}{} \Comment{Update the highest found cut}
                     \Else{}
-                    \Endif{}
-                \EndFor{}
-
-                \State{} 
+                        \State{} $subSet = oldSubSet$ \Comment{We haven't found a larger cut revert the changes}
+                    \EndIf{}
+                \EndFor{} \\
                 \EndFunction{}
             \end{algorithmic}
             \caption{Greedy algorithm to solve the MaxCut Problem}
         \end{algorithm}
+
         
+        \begin{algorithm}[H]
+            \begin{algorithmic}[1]
+                \Function{Randomize-Sets}{$V$}
+
+                    \State{}$subSet = \emptyset$ \Comment{Create an empty set to store our output} \\
+
+                    \For{each $i$ to $|V|$ increment by 1} \Comment{For each node in the graph}
+                        \State{}$randNumber = $[Random number between 0 and 1 (inc.)]
+                        \If{$randNumber\,\%\,2 = 1$} \Comment{50\% change of being selected for the subset}
+                            \State{}$subSet = subSet \cup \{V[i]\}$
+                        \EndIf{}
+                    \EndFor{} \\
+
+                    \State{}\Return{$subSet$}
+
+                \EndFunction{}
+            \end{algorithmic}
+            \caption{Randomly selects and puts vertices into a subgraph}
+        \end{algorithm}
+
+        \pagebreak
+        \begin{center}
+            \textit{In-Set} when expressed using set logic seems very trivial,
+            however when implementing it a while loop will be required and thus
+            it's useful to extract the code into it's own function. \\
+        \end{center}
+
+        \begin{algorithm}[H]
+            \begin{algorithmic}[1]
+                \Function{In-Set}{$v, subSet$}
+
+                \If{$v \in subSet$} 
+                        \State{}\Return{true}
+                    \Else{}
+                        \State{}\Return{false}
+                    \EndIf{}
+
+                \EndFunction{}
+            \end{algorithmic}
+            \caption{Checks if a vertex $v$ is contained in $subSet$}
+        \end{algorithm}
+
     \end{quoting}
 
 \end{homeworkProblem}
